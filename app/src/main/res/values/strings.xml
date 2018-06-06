@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ProjectO</string>
+    <string name="permission_never_ask">You have ask the OS to never ask for the permission, thus I can not save the image for you</string>
 </resources>
