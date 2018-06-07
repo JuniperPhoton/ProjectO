@@ -5,6 +5,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            def key = properties.getProperty('key')
+            def password = properties.getProperty('password')
+
+            keyAlias key
+            keyPassword password
+            storeFile file('keystore/po.jks')
+            storePassword password
+        }
+    }
+
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.juniperphoton.projecto"

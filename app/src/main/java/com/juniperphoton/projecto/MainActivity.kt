@@ -136,12 +136,18 @@ class MainActivity : AppCompatActivity() {
                     onPickedImage(it)
                 }
             }
-            WRITE_EXTERNAL_STORAGE_CODE -> {
-                output()
-            }
             else -> {
 
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<out String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == WRITE_EXTERNAL_STORAGE_CODE) {
+            output()
         }
     }
 
@@ -187,10 +193,6 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "Saved:D", Toast.LENGTH_SHORT).show()
                     }
                 }.execute(file.absolutePath)
-            }
-            PermissionUtil.anyNeverAskAgain(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)) -> {
-                Toast.makeText(this, resources.getString(R.string.permission_never_ask), Toast.LENGTH_LONG)
-                        .show()
             }
             else -> {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
