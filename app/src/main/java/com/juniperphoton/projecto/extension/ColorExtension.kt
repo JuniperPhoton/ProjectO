@@ -1,4 +1,4 @@
-package com.juniperphoton.projecto
+package com.juniperphoton.projecto.extension
 
 import android.graphics.Color
 

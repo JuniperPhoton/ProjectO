@@ -24,6 +24,9 @@ class MockupView(context: Context,
         private const val OUTPUT_RATIO = 3f / 4
     }
 
+    /**
+     * Represent an async task which decodes drawable or file as bitmap.
+     */
     open abstract class DecodeTask(private val context: Context) : AsyncTask<Any, Any, Bitmap?>() {
         override fun doInBackground(vararg params: Any): Bitmap? {
             val param = params?.firstOrNull() ?: return null
@@ -56,29 +59,65 @@ class MockupView(context: Context,
         }
     }
 
+    /**
+     * A bitmap that contains the shell.
+     */
     private var shellBitmap: Bitmap? = null
+
+    /**
+     * A bitmap that contains the shadow.
+     */
     private var shadowBitmap: Bitmap? = null
+
+    /**
+     * A bitmap that contains the screenshot
+     */
     private var screenshotBitmap: Bitmap? = null
 
+    /**
+     * A paint that draws the screenshot to provide dither feature.
+     */
     private var screenshotPaint = Paint()
+
+    /**
+     * A paint that draws screenshot placeholder.
+     * The default color is white.
+     */
     private var blankPaint = Paint()
+
+    /**
+     * A paint that used to extract alpha channel of [shellBitmap].
+     */
+    private var alphaPaint = Paint()
+
+    /**
+     * A paint that draws shadow.
+     */
+    private var shadowPaint = Paint()
+
     private var dstRect = Rect()
     private var shadowRect = Rect()
     private var screenRect = Rect()
 
-    private var alphaPaint = Paint()
-    private var shadowPaint = Paint()
-
     private var defaultBackgroundInt: Int = 0
 
+    /**
+     * The mockup schema that represents the meta of the shell.
+     */
     var mockupSchema: MockupSchema? = null
         set(value) {
             field = value
             prepareBitmaps()
         }
 
+    /**
+     * Invoked when the [backgroundColorInt] is changed.
+     */
     var onBackgroundColorChanged: ((Int) -> Unit)? = null
 
+    /**
+     * The drawing background color.
+     */
     var backgroundColorInt: Int = 0
         set(value) {
             field = value
@@ -86,6 +125,9 @@ class MockupView(context: Context,
             loadScreenshotBitmap()
         }
 
+    /**
+     * Whether we should pick [backgroundColorInt] from [screenshotBitmap].
+     */
     var pickBackgroundFromScreenshot: Boolean = false
         set(value) {
             field = value
@@ -94,12 +136,18 @@ class MockupView(context: Context,
             }
         }
 
+    /**
+     * Draw shadow or not.
+     */
     var drawShadow: Boolean = false
         set(value) {
             field = value
             invalidate()
         }
 
+    /**
+     * The screenshot uri starts with "content://".
+     */
     var screenshotUri: Uri? = null
         set(value) {
             field = value
@@ -117,25 +165,16 @@ class MockupView(context: Context,
         alphaPaint.maskFilter = BlurMaskFilter(SHADOW_BLUR_RADIUS.toFloat(), BlurMaskFilter.Blur.OUTER)
         shadowPaint.color = Color.argb(0.4f, 0f, 0f, 0f)
 
+        screenshotPaint.isAntiAlias = true
         screenshotPaint.isDither = true
         screenshotPaint.isFilterBitmap = true
         blankPaint.color = Color.WHITE
     }
 
-    fun pickBackgroundColor(): Boolean {
-        val bm = screenshotBitmap ?: return false
-        if (bm.isRecycled) return false
 
-        backgroundColorInt = if (pickBackgroundFromScreenshot) {
-            val p = Palette.from(bm).generate()
-            p.getDominantColor(defaultBackgroundInt)
-        } else {
-            defaultBackgroundInt
-        }
-
-        return true
-    }
-
+    /**
+     * Draw to the output bitmap and save it to the file [filePath].
+     */
     fun drawOutput(filePath: String) {
         val outputBitmap = Bitmap.createBitmap(
                 (OUTPUT_HEIGHT * OUTPUT_RATIO).toInt(),
@@ -150,6 +189,20 @@ class MockupView(context: Context,
         }
 
         outputBitmap.recycle()
+    }
+
+    private fun pickBackgroundColor(): Boolean {
+        val bm = screenshotBitmap ?: return false
+        if (bm.isRecycled) return false
+
+        backgroundColorInt = if (pickBackgroundFromScreenshot) {
+            val p = Palette.from(bm).generate()
+            p.getDominantColor(defaultBackgroundInt)
+        } else {
+            defaultBackgroundInt
+        }
+
+        return true
     }
 
     private fun loadScreenshotBitmap() {

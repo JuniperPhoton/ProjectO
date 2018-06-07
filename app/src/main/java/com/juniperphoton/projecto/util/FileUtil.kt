@@ -22,14 +22,14 @@ object FileUtil {
         return File(mediaStorageDir + File.separator + "IMG_" + timeStamp + ".png")
     }
 
-    fun getMediaStorageDir(context: Context): String? {
+    private fun getMediaStorageDir(context: Context): String? {
         val mediaStorageDir: File
         mediaStorageDir = if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
             val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) ?: return ""
             File(path, "ProjectO")
         } else {
             val extStorageDirectory = context.filesDir.absolutePath
-            File(extStorageDirectory, "ButterCamera")
+            File(extStorageDirectory, "ProjectO")
         }
 
         if (!mediaStorageDir.exists()) {

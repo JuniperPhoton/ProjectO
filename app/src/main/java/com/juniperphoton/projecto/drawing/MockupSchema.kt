@@ -24,19 +24,38 @@ class MockupSchema {
         }
     }
 
+    /**
+     * Use as built-in shell
+     */
     @DrawableRes
     var shellRes: Int = 0
 
+    /**
+     * Use as external shell
+     */
     var filePath: String? = null
 
+    /**
+     * Actual resource to be decoded. See [MockupView.DecodeTask] for details.
+     */
     val res: Any?
         get() {
             if (shellRes != 0) return shellRes
             return filePath
         }
 
+    /**
+     * Indicate the aspect ratio of the phone screen
+     */
     var inScreenAspectRatio: Float = 1f
 
+    /**
+     * The left position of the screenshot to the shell. In percentage.
+     */
     var leftPercentage = 0f
+
+    /**
+     * The top position of the screenshot to the shell. In percentage.
+     */
     var topPercentage = 0f
 }

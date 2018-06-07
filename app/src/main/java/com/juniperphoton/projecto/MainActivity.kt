@@ -13,11 +13,13 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.juniperphoton.projecto.drawing.MockupSchema
 import com.juniperphoton.projecto.drawing.MockupView
+import com.juniperphoton.projecto.extension.isLightColor
 import com.juniperphoton.projecto.util.FileUtil
 import com.juniperphoton.projecto.util.PermissionUtil
 import com.juniperphoton.projecto.util.Preferences
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PICK_IMAGE_CODE = 0
         private const val WRITE_EXTERNAL_STORAGE_CODE = 1
+        private const val TAG = "MainActivity"
     }
 
     private lateinit var mockupView: MockupView
@@ -112,10 +115,13 @@ class MainActivity : AppCompatActivity() {
 //        frameButton.setImageLevel(if (mockupView.mockupSchema == flatMockup) 1 else 0)
 
         mockupView.mockupSchema = defaultMockup
+
+        updateScreenshotByIntent()
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        this.intent = intent
         updateScreenshotByIntent()
     }
 
@@ -150,6 +156,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onPickedImage(dataUri: Uri) {
+        Log.i(TAG, "pick image: $dataUri")
         addHint.visibility = View.GONE
         mockupView.screenshotUri = dataUri
     }
