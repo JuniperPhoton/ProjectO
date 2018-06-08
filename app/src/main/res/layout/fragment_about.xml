@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Screen"
+            android:textColor="@color/colorPrimary"
+            android:textSize="40sp"
+            android:textStyle="normal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Decor"
+            android:textColor="@color/colorPrimary"
+            android:textSize="40sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/version_text"
+        style="@style/AboutSubCatText"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/version_round_bg"
+        android:paddingBottom="2dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="2dp"
+        android:text="Version 0.1.1"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        style="@style/AboutContent"
+        android:text="@string/about_desc"/>
+
+    <TextView
+        style="@style/AboutSubCatText"
+        android:text="CREATED BY"/>
+
+    <TextView
+        style="@style/AboutContent"
+        android:text="JuniperPhoton"/>
+
+    <TextView
+        style="@style/AboutSubCatText"
+        android:text="MOCKUP BY"/>
+
+    <TextView
+        style="@style/AboutContent"
+        android:text="Amrit's Shop"/>
+
+    <TextView
+        style="@style/AboutSubCatText"
+        android:text="CONTACT ME"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/email_item"
+            style="@style/AboutContactItem"
+            android:src="@drawable/ic_email"/>
+
+        <ImageView
+            android:id="@+id/github_item"
+            style="@style/AboutContactItem"
+            android:src="@drawable/ic_github_icon"/>
+
+        <ImageView
+            android:id="@+id/twitter_item"
+            style="@style/AboutContactItem"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_twitter"/>
+
+        <ImageView
+            android:id="@+id/weibo_item"
+            style="@style/AboutContactItem"
+            android:src="@drawable/ic_weibo_social_logo"/>
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+</LinearLayout>

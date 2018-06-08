@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">ProjectO</string>
+    <string name="app_name">ScreenDecor</string>
+    <string name="about_desc">Currently this supports OnePlus 6 mockup only. I will consider adding customizing feature in the future.</string>
+    <string name="email_url">dengweichao@hotmail.com</string>
+    <string name="github_url">https://github.com/JuniperPhoton/MyerSplashAndroid</string>
+    <string name="twitter_url">https://twitter.com/juniperphoton</string>
+    <string name="weibo_url">
+        https://weibo.com/photon
+    </string>
     <string name="permission_never_ask">You have ask the OS to never ask for the permission, thus I can not save the image for you</string>
 </resources>
