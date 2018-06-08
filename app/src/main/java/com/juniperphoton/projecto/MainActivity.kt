@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.widget.ImageView
 import android.widget.Toast
 import butterknife.BindView
@@ -170,14 +171,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateStatusBarColor(color: Int) {
-        var flag = window.decorView.systemUiVisibility
-        flag = if (color.isLightColor()) {
-            flag or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        var flag = if (color.isLightColor()) {
+            SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
-            flag or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            0
         }
+
         window.decorView.systemUiVisibility = flag
         window.statusBarColor = color
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && color.isLightColor()) {
             val decorView = window?.decorView ?: return
             val mask = decorView.systemUiVisibility
