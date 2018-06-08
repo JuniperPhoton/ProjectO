@@ -122,7 +122,6 @@ class MockupView(context: Context,
         set(value) {
             field = value
             onBackgroundColorChanged?.invoke(value)
-            loadScreenshotBitmap()
         }
 
     /**
@@ -170,7 +169,6 @@ class MockupView(context: Context,
         screenshotPaint.isFilterBitmap = true
         blankPaint.color = Color.WHITE
     }
-
 
     /**
      * Draw to the output bitmap and save it to the file [filePath].
@@ -250,6 +248,8 @@ class MockupView(context: Context,
         val l = ((outputW - shellW) / 2).toInt()
         val t = ((outputH - shellH) / 2).toInt()
         dstRect.set(l, t, (l + shellW).toInt(), (t + shellH).toInt())
+
+        Log.i(TAG, "outputW: $outputW, outputH: $outputH, dst rect: $dstRect")
 
         shadowRect.set(dstRect)
         shadowRect.inset(-SHADOW_BLUR_RADIUS / 3, -SHADOW_BLUR_RADIUS / 3)
