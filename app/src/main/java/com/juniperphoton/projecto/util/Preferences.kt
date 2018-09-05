@@ -29,4 +29,12 @@ object Preferences {
     fun getBoolean(context: Context?, key: String, def: Boolean): Boolean {
         return getSharedPreferences(context)?.getBoolean(key, def) ?: def
     }
+
+    fun setInt(context: Context?, key: String, value: Int) {
+        getSharedPreferences(context)?.edit()?.putInt(key, value)
+    }
+
+    fun getInt(context: Context?, key: String, def: Int): Int {
+        return getSharedPreferences(context)?.getInt(key, def) ?: def
+    }
 }

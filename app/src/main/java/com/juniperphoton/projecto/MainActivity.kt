@@ -55,8 +55,11 @@ class MainActivity : AppCompatActivity() {
 
     private var progressDialog: ProgressDialog? = null
 
-    private var defaultMockup = MockupSchema.createDefault()
-    private var flatMockup = MockupSchema.createFlat()
+    private val mockups = listOf(MockupSchema.createDefault(),
+            MockupSchema.createNoBang(),
+            MockupSchema.createFlat())
+
+    private var mockupsIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,9 +73,6 @@ class MainActivity : AppCompatActivity() {
             updateStatusBarColor(color)
         }
 
-        // todo: solve this
-        frameButton.visibility = View.GONE
-
         val pick = Preferences.getBoolean(this, Preferences.KEY_PICK, false)
         mockupView.pickBackgroundFromScreenshot = pick
         pickButton.setImageLevel(if (pick) 1 else 0)
@@ -81,11 +81,9 @@ class MainActivity : AppCompatActivity() {
         mockupView.drawShadow = drawShadow
         shadowButton.setImageLevel(if (drawShadow) 1 else 0)
 
-//        val frame = Preferences.getBoolean(this, Preferences.KEY_FRAME, false)
-//        mockupView.mockupSchema = if (frame) flatMockup else defaultMockup
-//        frameButton.setImageLevel(if (mockupView.mockupSchema == flatMockup) 1 else 0)
+        mockupsIndex = Preferences.getInt(this, Preferences.KEY_FRAME, 0)
 
-        mockupView.mockupSchema = defaultMockup
+        mockupView.mockupSchema = mockups[mockupsIndex]
 
         updateScreenshotByIntent()
     }
@@ -124,14 +122,12 @@ class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.frame_button)
     fun onClickFrame() {
-        if (mockupView.mockupSchema == defaultMockup) {
-            mockupView.mockupSchema = flatMockup
-        } else {
-            mockupView.mockupSchema = defaultMockup
+        mockupsIndex++
+        if (mockupsIndex >= mockups.size) {
+            mockupsIndex = 0
         }
-        val checked = mockupView.mockupSchema == flatMockup
-        frameButton.setImageLevel(if (checked) 1 else 0)
-        Preferences.setBoolean(this, Preferences.KEY_FRAME, checked)
+        mockupView.mockupSchema = mockups[mockupsIndex]
+        Preferences.setInt(this, Preferences.KEY_FRAME, mockupsIndex)
     }
 
     override fun onNewIntent(intent: Intent?) {
