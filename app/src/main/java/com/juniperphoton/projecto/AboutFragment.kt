@@ -3,6 +3,7 @@ package com.juniperphoton.projecto
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialogFragment
 import android.view.LayoutInflater
@@ -17,7 +18,6 @@ import com.juniperphoton.projecto.extension.startActivitySafely
 
 class AboutFragment : BottomSheetDialogFragment() {
     private var contentView: View? = null
-    private var contentHeight = 0
 
     @BindView(R.id.version_text)
     lateinit var versionTextView: TextView
@@ -27,10 +27,6 @@ class AboutFragment : BottomSheetDialogFragment() {
                               savedInstanceState: Bundle?): View? {
         contentView = inflater.inflate(R.layout.fragment_about, container, false)
         ButterKnife.bind(this, contentView!!)
-
-        val spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        contentView!!.measure(spec, spec)
-        contentHeight = contentView!!.measuredHeight
 
         updateVersion()
 
@@ -44,16 +40,19 @@ class AboutFragment : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        try {
-            val parent = contentView?.parent
-            if (parent is View) {
-                parent.background = null
-                val bottomSheetBehavior = BottomSheetBehavior.from(parent)
-                bottomSheetBehavior.peekHeight = contentHeight
-                bottomSheetBehavior.isHideable = true
+        Looper.myQueue().addIdleHandler {
+            try {
+                val parent = contentView?.parent
+                if (parent is View) {
+                    parent.background = null
+                    val bottomSheetBehavior = BottomSheetBehavior.from(parent)
+                    bottomSheetBehavior.peekHeight = parent.height
+                    bottomSheetBehavior.isHideable = true
+                }
+            } catch (e: IllegalArgumentException) {
+                // ignore it
             }
-        } catch (e: IllegalArgumentException) {
-            // ignore it
+            false
         }
     }
 

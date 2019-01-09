@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/top_round_background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="20dp">
@@ -35,10 +35,10 @@
         style="@style/AboutSubCatText"
         android:layout_marginTop="4dp"
         android:background="@drawable/version_round_bg"
-        android:paddingBottom="2dp"
         android:paddingLeft="4dp"
-        android:paddingRight="4dp"
         android:paddingTop="2dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="2dp"
         android:text="Version 0.1.1"
         android:textColor="@android:color/white"/>
 
