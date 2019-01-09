@@ -3,7 +3,6 @@ package com.juniperphoton.projecto.drawing
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
-import android.os.AsyncTask
 import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.Palette
 import android.util.AttributeSet
@@ -17,46 +16,10 @@ class MockupView(context: Context,
                  attributeSet: AttributeSet?) : View(context, attributeSet) {
     companion object {
         private const val TAG = "MockupView"
-        private const val MAX_PREVIEW_SIZE = 1080
         private const val SHADOW_BLUR_RADIUS = 80
         private const val SHELL_CONTENT_SIZE_RATIO = 0.8
         private const val OUTPUT_HEIGHT = (2240 / SHELL_CONTENT_SIZE_RATIO).toInt()
         private const val OUTPUT_RATIO = 3f / 4
-    }
-
-    /**
-     * Represent an async task which decodes drawable or file as bitmap.
-     */
-    open abstract class DecodeTask(private val context: Context) : AsyncTask<Any, Any, Bitmap?>() {
-        override fun doInBackground(vararg params: Any): Bitmap? {
-            val param = params?.firstOrNull() ?: return null
-
-            val o = BitmapFactory.Options()
-            o.inJustDecodeBounds = true
-
-            if (param is Uri) {
-                Log.i(TAG, "about to decode file: $param")
-
-                val fd = context.contentResolver.openFileDescriptor(param, "r")
-                BitmapFactory.decodeFileDescriptor(fd.fileDescriptor, null, o)
-            } else if (param is Int) {
-                Log.i(TAG, "about to decode res: $param")
-
-                BitmapFactory.decodeResource(context.resources, param, o)
-            }
-
-            o.inJustDecodeBounds = false
-            o.inSampleSize = Math.max(1, o.outWidth / MAX_PREVIEW_SIZE)
-
-            return when (param) {
-                is Uri -> {
-                    val fd = context.contentResolver.openFileDescriptor(param, "r")
-                    BitmapFactory.decodeFileDescriptor(fd.fileDescriptor, null, null)
-                }
-                is Int -> BitmapFactory.decodeResource(context.resources, param, o)
-                else -> null
-            }
-        }
     }
 
     /**
@@ -73,6 +36,8 @@ class MockupView(context: Context,
      * A bitmap that contains the screenshot
      */
     private var screenshotBitmap: Bitmap? = null
+
+    private var blurBitmap: Bitmap? = null
 
     /**
      * A paint that draws the screenshot to provide dither feature.
@@ -98,6 +63,7 @@ class MockupView(context: Context,
     private var dstRect = Rect()
     private var shadowRect = Rect()
     private var screenRect = Rect()
+    private var blurRect = RectF()
 
     private var defaultBackgroundInt: Int = 0
 
@@ -139,6 +105,15 @@ class MockupView(context: Context,
      * Draw shadow or not.
      */
     var drawShadow: Boolean = false
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    /**
+     * Blur the content bitmap and draw it as background.
+     */
+    var drawBlur: Boolean = false
         set(value) {
             field = value
             invalidate()
@@ -206,27 +181,28 @@ class MockupView(context: Context,
     private fun loadScreenshotBitmap() {
         val uri = screenshotUri ?: return
         object : DecodeTask(context) {
-            override fun onPostExecute(result: Bitmap?) {
+            override fun onPostExecute(result: DecodeResult?) {
                 super.onPostExecute(result)
-                screenshotBitmap = result
+                screenshotBitmap = result?.contentBitmap
+                blurBitmap = result?.blurBitmap
                 if (pickBackgroundFromScreenshot) {
                     pickBackgroundColor()
                 }
                 invalidate()
             }
-        }.execute(uri)
+        }.execute(DecodeInput(uri, null, true))
     }
 
     private fun prepareBitmaps() {
         val schema = mockupSchema ?: return
         object : DecodeTask(context) {
-            override fun onPostExecute(result: Bitmap?) {
+            override fun onPostExecute(result: DecodeResult?) {
                 super.onPostExecute(result)
-                shellBitmap = result
+                shellBitmap = result?.contentBitmap
                 shadowBitmap = shellBitmap?.extractAlpha(alphaPaint, null)
                 invalidate()
             }
-        }.execute(schema.res)
+        }.execute(DecodeInput(null, schema.res as Int, false))
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -239,7 +215,18 @@ class MockupView(context: Context,
 
         val schema = mockupSchema ?: return
 
-        canvas.drawColor(backgroundColorInt)
+        if (drawBlur && blurBitmap != null) {
+            val bW = blurBitmap!!.width
+            val bH = blurBitmap!!.height
+
+            val ratio = bW * 1f / bH
+            blurRect.set(0f, 0f, outputW.toFloat(), outputW / ratio)
+            blurRect.offset(0f, -(blurRect.height() - outputH) / 2f)
+
+            canvas.drawBitmap(blurBitmap, null, blurRect, null)
+        } else {
+            canvas.drawColor(backgroundColorInt)
+        }
 
         val shellH = outputH * SHELL_CONTENT_SIZE_RATIO
         val ratio = shellBm.width * 1f / shellBm.height

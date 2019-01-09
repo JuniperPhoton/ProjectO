@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.widget.ImageView
 import android.widget.Toast
 import butterknife.BindView
@@ -44,8 +43,8 @@ class MainActivity : AppCompatActivity() {
     @BindView(R.id.pick_button)
     lateinit var pickButton: ImageView
 
-    @BindView(R.id.shadow_button)
-    lateinit var shadowButton: ImageView
+    @BindView(R.id.blur_button)
+    lateinit var blurButton: ImageView
 
     @BindView(R.id.frame_button)
     lateinit var frameButton: ImageView
@@ -77,9 +76,9 @@ class MainActivity : AppCompatActivity() {
         mockupView.pickBackgroundFromScreenshot = pick
         pickButton.setImageLevel(if (pick) 1 else 0)
 
-        val drawShadow = Preferences.getBoolean(this, Preferences.KEY_SHADOW, false)
-        mockupView.drawShadow = drawShadow
-        shadowButton.setImageLevel(if (drawShadow) 1 else 0)
+        val drawBlur = Preferences.getBoolean(this, Preferences.KEY_SHADOW, false)
+        mockupView.drawBlur = drawBlur
+        blurButton.setImageLevel(if (drawBlur) 1 else 0)
 
         mockupsIndex = Preferences.getInt(this, Preferences.KEY_FRAME, 0)
 
@@ -113,11 +112,11 @@ class MainActivity : AppCompatActivity() {
         Preferences.setBoolean(this, Preferences.KEY_PICK, mockupView.pickBackgroundFromScreenshot)
     }
 
-    @OnClick(R.id.shadow_button)
-    fun onClickShadow() {
-        mockupView.drawShadow = !mockupView.drawShadow
-        shadowButton.setImageLevel(if (mockupView.drawShadow) 1 else 0)
-        Preferences.setBoolean(this, Preferences.KEY_SHADOW, mockupView.drawShadow)
+    @OnClick(R.id.blur_button)
+    fun onClickBlur() {
+        mockupView.drawBlur = !mockupView.drawBlur
+        blurButton.setImageLevel(if (mockupView.drawBlur) 1 else 0)
+        Preferences.setBoolean(this, Preferences.KEY_BLUR, mockupView.drawBlur)
     }
 
     @OnClick(R.id.frame_button)

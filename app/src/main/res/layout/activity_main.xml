@@ -61,9 +61,9 @@
             android:tooltipText="Pick background from screenshot"/>
 
         <ImageView
-            android:id="@+id/shadow_button"
+            android:id="@+id/blur_button"
             style="@style/ToolsStyle"
-            android:src="@drawable/layer_list_shadow"
+            android:src="@drawable/layer_list_blur"
             android:tooltipText="Shadow"/>
 
         <ImageView

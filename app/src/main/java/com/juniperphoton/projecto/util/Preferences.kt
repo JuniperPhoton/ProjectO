@@ -8,6 +8,7 @@ object Preferences {
 
     const val KEY_PICK = "pick"
     const val KEY_SHADOW = "shadow"
+    const val KEY_BLUR = "blur"
     const val KEY_FRAME = "frame"
 
     fun getSharedPreferences(context: Context?): SharedPreferences? {
