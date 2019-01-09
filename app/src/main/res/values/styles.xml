@@ -9,7 +9,7 @@
     </style>
 
     <style name="ToolsStyle">
-        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
+        <item name="android:background">@drawable/ripple_primary</item>
         <item name="android:padding">20dp</item>
         <item name="android:layout_width">@dimen/tool_container_height</item>
         <item name="android:layout_height">@dimen/tool_container_height</item>

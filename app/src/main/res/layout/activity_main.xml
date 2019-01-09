@@ -29,6 +29,18 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_add"/>
+
+        <ImageView
+            android:id="@+id/more_button"
+            style="@style/ToolsStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|top"
+            android:layout_margin="12dp"
+            android:background="@drawable/round_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_more"
+            android:tooltipText="More"/>
     </FrameLayout>
 
     <LinearLayout
@@ -59,12 +71,6 @@
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_frame"
             android:tooltipText="Shadow"/>
-
-        <ImageView
-            android:id="@+id/more_button"
-            style="@style/ToolsStyle"
-            android:src="@drawable/ic_more"
-            android:tooltipText="More"/>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
