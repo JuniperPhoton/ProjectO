@@ -11,13 +11,11 @@ import com.juniperphoton.projecto.R
 object NotificationUtil {
     const val DEFAULT_NOTIFICATION_CHANNEL_ID = "default"
 
-    private const val DEFAULT_ID = 0
-
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel0 = NotificationChannel(DEFAULT_NOTIFICATION_CHANNEL_ID,
                     App.instance.getString(R.string.app_name),
-                    NotificationManager.IMPORTANCE_DEFAULT)
+                    NotificationManager.IMPORTANCE_HIGH)
             channel0.enableLights(true)
             channel0.enableVibration(true)
 
