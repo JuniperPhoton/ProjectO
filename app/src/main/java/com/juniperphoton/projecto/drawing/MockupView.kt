@@ -67,6 +67,8 @@ class MockupView(context: Context,
 
     private var defaultBackgroundInt: Int = 0
 
+    var onLoadingChanged: ((Boolean) -> Unit)? = null
+
     /**
      * The mockup schema that represents the meta of the shell.
      */
@@ -168,12 +170,9 @@ class MockupView(context: Context,
         val bm = screenshotBitmap ?: return false
         if (bm.isRecycled) return false
 
-        backgroundColorInt = if (pickBackgroundFromScreenshot) {
-            val p = Palette.from(bm).generate()
-            p.getDominantColor(defaultBackgroundInt)
-        } else {
-            defaultBackgroundInt
-        }
+        val p = Palette.from(bm).generate()
+        val color = p.getDominantColor(defaultBackgroundInt)
+        backgroundColorInt = color
 
         return true
     }
@@ -181,14 +180,18 @@ class MockupView(context: Context,
     private fun loadScreenshotBitmap() {
         val uri = screenshotUri ?: return
         object : DecodeTask(context) {
+            override fun onPreExecute() {
+                super.onPreExecute()
+                onLoadingChanged?.invoke(true)
+            }
+
             override fun onPostExecute(result: DecodeResult?) {
                 super.onPostExecute(result)
                 screenshotBitmap = result?.contentBitmap
                 blurBitmap = result?.blurBitmap
-                if (pickBackgroundFromScreenshot) {
-                    pickBackgroundColor()
-                }
+                pickBackgroundColor()
                 invalidate()
+                onLoadingChanged?.invoke(false)
             }
         }.execute(DecodeInput(uri, null, true))
     }

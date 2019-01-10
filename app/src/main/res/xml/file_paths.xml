@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-files-path
+        name="external_file_path"
+        path="Pictures/ScreenDecor"/>
+
+    <external-path
+        name="external_path"
+        path="Pictures/ScreenDecor"/>
+</paths>

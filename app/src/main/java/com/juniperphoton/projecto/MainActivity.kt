@@ -4,19 +4,26 @@ package com.juniperphoton.projecto
 
 import android.Manifest
 import android.app.Activity
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.NotificationCompat
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.ImageView
-import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -24,8 +31,10 @@ import com.juniperphoton.projecto.drawing.MockupSchema
 import com.juniperphoton.projecto.drawing.MockupView
 import com.juniperphoton.projecto.extension.isLightColor
 import com.juniperphoton.projecto.util.FileUtil
+import com.juniperphoton.projecto.util.NotificationUtil
 import com.juniperphoton.projecto.util.PermissionUtil
 import com.juniperphoton.projecto.util.Preferences
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -52,11 +61,12 @@ class MainActivity : AppCompatActivity() {
     @BindView(R.id.add_hint)
     lateinit var addHint: View
 
+    @BindView(R.id.progress_bar)
+    lateinit var progresBar: View
+
     private var progressDialog: ProgressDialog? = null
 
-    private val mockups = listOf(MockupSchema.createDefault(),
-            MockupSchema.createNoBang(),
-            MockupSchema.createFlat())
+    private val mockups = listOf(MockupSchema.createDefault())
 
     private var mockupsIndex = 0
 
@@ -70,6 +80,10 @@ class MainActivity : AppCompatActivity() {
 
         mockupView.onBackgroundColorChanged = changed@{ color ->
             updateStatusBarColor(color)
+        }
+
+        mockupView.onLoadingChanged = { loading ->
+            progresBar.visibility = if (loading) View.VISIBLE else View.GONE
         }
 
         val pick = Preferences.getBoolean(this, Preferences.KEY_PICK, false)
@@ -94,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.output_fab)
     fun onClickFab() {
-        output()
+        compose()
     }
 
     @OnClick(R.id.mockup_view)
@@ -157,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == WRITE_EXTERNAL_STORAGE_CODE) {
-            output()
+            compose()
         }
     }
 
@@ -194,12 +208,12 @@ class MainActivity : AppCompatActivity() {
         mockupView.screenshotUri = dataUri
     }
 
-    private fun output() {
+    private fun compose() {
         when {
             PermissionUtil.isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
                 val file = FileUtil.getOutputMediaFile(this) ?: return
 
-                object : AsyncTask<String, Any, Boolean>() {
+                object : AsyncTask<String, Any, Pair<File, Bitmap>>() {
                     override fun onPreExecute() {
                         progressDialog = ProgressDialog(this@MainActivity)
                         progressDialog?.setTitle("Rendering")
@@ -207,17 +221,26 @@ class MainActivity : AppCompatActivity() {
                         progressDialog?.show()
                     }
 
-                    override fun doInBackground(vararg params: String?): Boolean {
+                    override fun doInBackground(vararg params: String?): Pair<File, Bitmap>? {
                         mockupView.drawOutput(file.absolutePath)
-                        return true
+                        val o = BitmapFactory.Options()
+                        o.inSampleSize = 4
+                        val bm = BitmapFactory.decodeFile(file.path, o)
+                        return file to bm
                     }
 
-                    override fun onPostExecute(result: Boolean?) {
+                    override fun onPostExecute(result: Pair<File, Bitmap>?) {
                         progressDialog?.dismiss()
+
+                        result ?: return
+
+                        val file = result.first
+                        val bm = result.second
 
                         sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                                 Uri.fromFile(file)))
-                        Toast.makeText(this@MainActivity, "Saved:D", Toast.LENGTH_SHORT).show()
+
+                        sendNotificationOnSaved(file, bm)
                     }
                 }.execute(file.absolutePath)
             }
@@ -226,5 +249,23 @@ class MainActivity : AppCompatActivity() {
                         WRITE_EXTERNAL_STORAGE_CODE)
             }
         }
+    }
+
+    private fun sendNotificationOnSaved(file: File, bitmap: Bitmap) {
+        val builder = NotificationCompat.Builder(this, NotificationUtil.DEFAULT_NOTIFICATION_CHANNEL_ID)
+        builder.setContentTitle("Saved")
+        builder.setContentText("Click to open file: ${file.path}")
+        builder.setSmallIcon(R.drawable.ic_saved)
+        builder.setLargeIcon(bitmap)
+
+        val intent = Intent()
+        intent.action = ACTION_VIEW
+        intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+        intent.setDataAndType(FileProvider.getUriForFile(this, packageName, file), "image/*")
+
+        builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, FLAG_UPDATE_CURRENT))
+
+        val notification = builder.build()
+        NotificationUtil.show(notification)
     }
 }

@@ -30,17 +30,14 @@
             android:layout_gravity="center"
             android:src="@drawable/ic_add"/>
 
-        <ImageView
-            android:id="@+id/more_button"
-            style="@style/ToolsStyle"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="right|top"
-            android:layout_margin="12dp"
-            android:background="@drawable/round_background"
-            android:padding="12dp"
-            android:src="@drawable/ic_more"
-            android:tooltipText="More"/>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"/>
     </FrameLayout>
 
     <LinearLayout
@@ -54,24 +51,59 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Pick primary"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Blur"/>
+        </RadioGroup>
+
         <ImageView
             android:id="@+id/pick_button"
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_pick_from_screenshot"
-            android:tooltipText="Pick background from screenshot"/>
+            android:tooltipText="Pick background from screenshot"
+            android:visibility="visible"/>
 
         <ImageView
             android:id="@+id/blur_button"
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_blur"
-            android:tooltipText="Shadow"/>
+            android:tooltipText="Shadow"
+            android:visibility="visible"/>
 
         <ImageView
             android:id="@+id/frame_button"
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_frame"
-            android:tooltipText="Shadow"/>
+            android:tooltipText="Shadow"
+            android:visibility="gone"/>
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/more_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_more"
+        android:tooltipText="More"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:elevation="9dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@id/output_fab"
+        app:layout_constraintRight_toLeftOf="@id/output_fab"
+        app:layout_constraintTop_toTopOf="@id/output_fab"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/output_fab"

@@ -49,8 +49,13 @@ abstract class DecodeTask(private val context: Context
             BitmapFactory.decodeResource(context.resources, resId, o)
         }
 
+        val maxSize = Math.max(o.outWidth, o.outHeight)
+
         o.inJustDecodeBounds = false
-        o.inSampleSize = Math.max(1, o.outWidth / MAX_PREVIEW_SIZE)
+        o.inScaled = false
+        o.inSampleSize = Math.round(maxSize * 1f / MAX_PREVIEW_SIZE)
+
+        Log.i(TAG, "in sample size: ${o.inSampleSize}")
 
         val bm = when {
             uri != null -> {
