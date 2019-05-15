@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
-import android.support.annotation.DrawableRes
 import android.util.Log
+import androidx.annotation.DrawableRes
 import com.juniperphoton.projecto.util.fastBlur
 
 private const val TAG = "DecodeTask"

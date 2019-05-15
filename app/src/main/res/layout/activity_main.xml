@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/mockup_container"
+        android:id="@+id/mockupContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:animateLayoutChanges="true"
@@ -19,19 +19,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.juniperphoton.projecto.drawing.MockupView
-            android:id="@+id/mockup_view"
+            android:id="@+id/mockupView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <ImageView
-            android:id="@+id/add_hint"
+            android:id="@+id/addHint"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_add"/>
 
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,29 +69,29 @@
         </RadioGroup>
 
         <ImageView
-            android:id="@+id/pick_button"
+            android:id="@+id/pickButton"
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_pick_from_screenshot"
             android:tooltipText="Pick background from screenshot"
             android:visibility="visible"/>
 
         <ImageView
-            android:id="@+id/blur_button"
+            android:id="@+id/blurButton"
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_blur"
             android:tooltipText="Shadow"
             android:visibility="visible"/>
 
         <ImageView
-            android:id="@+id/frame_button"
+            android:id="@+id/frameButton"
             style="@style/ToolsStyle"
             android:src="@drawable/layer_list_frame"
             android:tooltipText="Shadow"
             android:visibility="gone"/>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/more_button"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/moreButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|top"
@@ -101,12 +101,12 @@
         app:backgroundTint="@color/colorPrimaryDark"
         app:elevation="9dp"
         app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@id/output_fab"
-        app:layout_constraintRight_toLeftOf="@id/output_fab"
-        app:layout_constraintTop_toTopOf="@id/output_fab"/>
+        app:layout_constraintBottom_toBottomOf="@id/outputFab"
+        app:layout_constraintRight_toLeftOf="@id/outputFab"
+        app:layout_constraintTop_toTopOf="@id/outputFab"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/output_fab"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/outputFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -119,4 +119,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tools_container"/>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

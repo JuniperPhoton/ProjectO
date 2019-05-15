@@ -1,6 +1,6 @@
 package com.juniperphoton.projecto.drawing
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import com.juniperphoton.projecto.R
 
 class MockupSchema {

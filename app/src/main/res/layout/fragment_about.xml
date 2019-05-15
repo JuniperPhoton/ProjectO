@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/version_text"
+        android:id="@+id/versionText"
         style="@style/AboutSubCatText"
         android:layout_marginTop="4dp"
         android:background="@drawable/version_round_bg"

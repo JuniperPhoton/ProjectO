@@ -1,7 +1,7 @@
 package com.juniperphoton.projecto.util
 
 import android.graphics.Bitmap
-import android.support.annotation.Px
+import androidx.annotation.Px
 
 // Stack Blur v1.0 from
 // http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html

@@ -16,53 +16,28 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.FileProvider
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-import android.widget.ImageView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
 import com.juniperphoton.projecto.drawing.MockupSchema
-import com.juniperphoton.projecto.drawing.MockupView
 import com.juniperphoton.projecto.extension.isLightColor
 import com.juniperphoton.projecto.util.FileUtil
 import com.juniperphoton.projecto.util.NotificationUtil
 import com.juniperphoton.projecto.util.PermissionUtil
 import com.juniperphoton.projecto.util.Preferences
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
         private const val PICK_IMAGE_CODE = 0
         private const val WRITE_EXTERNAL_STORAGE_CODE = 1
         private const val TAG = "MainActivity"
     }
-
-    @BindView(R.id.mockup_view)
-    lateinit var mockupView: MockupView
-
-    @BindView(R.id.mockup_container)
-    lateinit var mockupContainer: View
-
-    @BindView(R.id.pick_button)
-    lateinit var pickButton: ImageView
-
-    @BindView(R.id.blur_button)
-    lateinit var blurButton: ImageView
-
-    @BindView(R.id.frame_button)
-    lateinit var frameButton: ImageView
-
-    @BindView(R.id.add_hint)
-    lateinit var addHint: View
-
-    @BindView(R.id.progress_bar)
-    lateinit var progresBar: View
 
     private var progressDialog: ProgressDialog? = null
 
@@ -74,8 +49,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        ButterKnife.bind(this)
-
         updateStatusBarColor(mockupView.backgroundColorInt)
 
         mockupView.onBackgroundColorChanged = changed@{ color ->
@@ -83,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mockupView.onLoadingChanged = { loading ->
-            progresBar.visibility = if (loading) View.VISIBLE else View.GONE
+            progressBar.visibility = if (loading) View.VISIBLE else View.GONE
         }
 
         val pick = Preferences.getBoolean(this, Preferences.KEY_PICK, false)
@@ -99,48 +72,48 @@ class MainActivity : AppCompatActivity() {
         mockupView.mockupSchema = mockups[mockupsIndex]
 
         updateScreenshotByIntent()
+
+        moreButton.setOnClickListener(this)
+        outputFab.setOnClickListener(this)
+        mockupView.setOnClickListener(this)
+        pickButton.setOnClickListener(this)
+        blurButton.setOnClickListener(this)
+        frameButton.setOnClickListener(this)
     }
 
-    @OnClick(R.id.more_button)
-    fun onClickMore() {
-        AboutFragment().show(supportFragmentManager, "About")
-    }
-
-    @OnClick(R.id.output_fab)
-    fun onClickFab() {
-        compose()
-    }
-
-    @OnClick(R.id.mockup_view)
-    fun onClickMockup() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select screenshot"), PICK_IMAGE_CODE)
-    }
-
-    @OnClick(R.id.pick_button)
-    fun onClickPick() {
-        mockupView.pickBackgroundFromScreenshot = !mockupView.pickBackgroundFromScreenshot
-        pickButton.setImageLevel(if (mockupView.pickBackgroundFromScreenshot) 1 else 0)
-        Preferences.setBoolean(this, Preferences.KEY_PICK, mockupView.pickBackgroundFromScreenshot)
-    }
-
-    @OnClick(R.id.blur_button)
-    fun onClickBlur() {
-        mockupView.drawBlur = !mockupView.drawBlur
-        blurButton.setImageLevel(if (mockupView.drawBlur) 1 else 0)
-        Preferences.setBoolean(this, Preferences.KEY_BLUR, mockupView.drawBlur)
-    }
-
-    @OnClick(R.id.frame_button)
-    fun onClickFrame() {
-        mockupsIndex++
-        if (mockupsIndex >= mockups.size) {
-            mockupsIndex = 0
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.moreButton -> {
+                AboutFragment().show(supportFragmentManager, "About")
+            }
+            R.id.outputFab -> {
+                compose()
+            }
+            R.id.mockupView -> {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(Intent.createChooser(intent, "Select screenshot"), PICK_IMAGE_CODE)
+            }
+            R.id.pickButton -> {
+                mockupView.pickBackgroundFromScreenshot = !mockupView.pickBackgroundFromScreenshot
+                pickButton.setImageLevel(if (mockupView.pickBackgroundFromScreenshot) 1 else 0)
+                Preferences.setBoolean(this, Preferences.KEY_PICK, mockupView.pickBackgroundFromScreenshot)
+            }
+            R.id.blurButton -> {
+                mockupView.drawBlur = !mockupView.drawBlur
+                blurButton.setImageLevel(if (mockupView.drawBlur) 1 else 0)
+                Preferences.setBoolean(this, Preferences.KEY_BLUR, mockupView.drawBlur)
+            }
+            R.id.frameButton -> {
+                mockupsIndex++
+                if (mockupsIndex >= mockups.size) {
+                    mockupsIndex = 0
+                }
+                mockupView.mockupSchema = mockups[mockupsIndex]
+                Preferences.setInt(this, Preferences.KEY_FRAME, mockupsIndex)
+            }
         }
-        mockupView.mockupSchema = mockups[mockupsIndex]
-        Preferences.setInt(this, Preferences.KEY_FRAME, mockupsIndex)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -180,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateStatusBarColor(color: Int) {
-        var flag = if (color.isLightColor()) {
+        val flag = if (color.isLightColor()) {
             SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             0

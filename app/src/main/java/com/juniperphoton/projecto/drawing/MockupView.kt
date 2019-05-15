@@ -3,11 +3,11 @@ package com.juniperphoton.projecto.drawing
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
-import android.support.v4.content.ContextCompat
-import android.support.v7.graphics.Palette
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.palette.graphics.Palette
 import com.juniperphoton.projecto.R
 import java.io.File
 import java.io.FileOutputStream
@@ -135,7 +135,7 @@ class MockupView(context: Context,
         defaultBackgroundInt = ContextCompat.getColor(context, R.color.backgroundGrey)
         backgroundColorInt = defaultBackgroundInt
 
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
         alphaPaint.isDither = true
         alphaPaint.isFilterBitmap = true
         alphaPaint.maskFilter = BlurMaskFilter(SHADOW_BLUR_RADIUS.toFloat(), BlurMaskFilter.Blur.OUTER)
