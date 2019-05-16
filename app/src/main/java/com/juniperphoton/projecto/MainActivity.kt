@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var progressDialog: ProgressDialog? = null
 
-    private val mockups = listOf(MockupSchema.createDefault())
+    private val mockups = listOf(MockupSchema.create7Pro())
 
     private var mockupsIndex = 0
 

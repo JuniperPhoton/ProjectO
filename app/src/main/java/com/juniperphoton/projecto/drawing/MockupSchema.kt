@@ -14,6 +14,15 @@ class MockupSchema {
             }
         }
 
+        fun create7Pro(): MockupSchema {
+            return MockupSchema().apply {
+                shellRes = R.drawable.pro
+                inScreenAspectRatio = 1440 / 3120f
+                leftPercentage = 18f / 532
+                topPercentage = 19f / 1128
+            }
+        }
+
         fun createNoBang(): MockupSchema {
             return MockupSchema().apply {
                 shellRes = R.drawable.shell_no_bang
